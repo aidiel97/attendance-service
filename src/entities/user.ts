@@ -2,8 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
     @Column({ type: 'varchar', length: 255, unique: true })
     username!: string;
@@ -17,9 +17,12 @@ export class User {
     @Column({ type: 'varchar', length: 255 })
     full_name!: string;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    created_at!: Date;
+    @Column({ type: 'boolean' })
+    is_deleted!: boolean;
 
-    @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updated_at!: Date;
+    @Column({ type: 'int' })
+    created_at!: number;
+
+    @Column({ type: 'int' })
+    updated_at!: number;
 }

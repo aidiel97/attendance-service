@@ -1,10 +1,11 @@
 CREATE TABLE attendances (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
+  id CHAR(36) PRIMARY KEY,
+  user_id CHAR(36) NOT NULL,
   clock_in TIMESTAMP NULL,
   clock_out TIMESTAMP NULL,
   status ENUM('IN', 'OUT') NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  is_deleted BOOLEAN NOT NULL,
+  created_at INT,
+  updated_at INT,
   FOREIGN KEY (user_id) REFERENCES users(id)
 );

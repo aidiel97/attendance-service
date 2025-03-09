@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 export const Config = {
     port: process.env.PORT || "3000",
+    issuer: process.env.ISSUER || "kasir_pintar",
 
     mysqlDbHost: process.env.MYSQL_DB_HOST || "localhost",
     mysqlDbUser: process.env.MYSQL_DB_USER || "root",
@@ -14,4 +15,9 @@ export const Config = {
     redisPort: parseInt(process.env.REDIS_PORT || '6379', 10),
     redisPassword: process.env.REDIS_PASSWORD || "",
     redisDb: parseInt(process.env.REDIS_DB || '0', 10),
+
+    jwtSecretKey: process.env.JWT_SECRET_KEY || "",
+
+    startWorkingHour: 8,
+    endWorkingHour: 17,
 };

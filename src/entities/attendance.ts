@@ -1,25 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('attendances')
 export class Attendance {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
     @Column()
-    user_id!: number;
+    user_id!: string;
 
-    @Column({ type: 'timestamp', nullable: true })
-    clock_in!: Date | null;
+    @Column({ type: 'int' })
+    clock_in!: number;
 
-    @Column({ type: 'timestamp', nullable: true })
-    clock_out!: Date | null;
+    @Column({ type: 'int' })
+    clock_out!: number;
 
     @Column({ type: 'enum', enum: ['IN', 'OUT'] })
     status!: 'IN' | 'OUT';
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    created_at!: Date;
+    @Column({ type: 'boolean' })
+    is_deleted!: boolean;
 
-    @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updated_at!: Date;
+    @Column({ type: 'int' })
+    created_at!: number;
+
+    @Column({ type: 'int' })
+    updated_at!: number;
 }

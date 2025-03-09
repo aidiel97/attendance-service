@@ -1,10 +1,12 @@
 import cors from "cors";
-import 'reflect-metadata';
+import "reflect-metadata";
 import express from "express";
+import userRouter from "./domain/user/route"
+import attendanceRouter from "./domain/attendance/route"
 
 import { Config } from "./pkg/config/config";
-import attendanceHandler from "./domain/attendance/handler";
 import { connectToMysql, connectToRedis } from "./pkg/db/connection";
+import {Jwt} from "./pkg/authentication/jwt";
 
 const app = express();
 app.use(cors());
@@ -15,7 +17,8 @@ const startServer = async () => {
         await connectToMysql();
         await connectToRedis();
 
-        app.use("/api/attendance", attendanceHandler);
+        app.use("/v1/attendance", Jwt.verifyToken, attendanceRouter);
+        app.use("/v1/user", userRouter);
 
         const PORT = Config.port;
         app.listen(PORT, () => {

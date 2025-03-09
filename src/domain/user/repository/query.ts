@@ -3,12 +3,21 @@ import { User } from "../../../entities/user";
 
 const userRepository = AppDataSource.getRepository(User);
 
-export const findOneById = async (id: number) => {
-    return await userRepository.findOneBy({ id });
-};
+export class UserQuery {
+    async mysqlFindOneById(id: string) {
+        return userRepository.findOneBy({ id });
+    };
 
-export const find = async (filters?: Partial<User>) => {
-    return await userRepository.find({
-        where: filters
-    });
-};
+    async mysqlFindOneByUsername(username: string) {
+        return userRepository.findOneBy({ username, is_deleted: false });
+    };
+
+    async mysqlFind(filters?: Partial<User>) {
+        return userRepository.find({
+            where: {
+                ...filters,
+                is_deleted: false
+            }
+        });
+    };
+}

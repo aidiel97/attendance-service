@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
-import { Config } from "../config/config"; // Pastikan Anda sudah mengonfigurasi config Anda
-import { Attendance } from "../../entities/attendance"; // Import entities Anda
+import { Config } from "../config/config";
+import { Attendance } from "../../entities/attendance";
+import { User } from "../../entities/user";
 
 const AppDataSource = new DataSource({
     type: "mysql",
@@ -12,7 +13,7 @@ const AppDataSource = new DataSource({
     synchronize: true,
     logging: true,
     entities: [
-        Attendance,
+        Attendance, User
     ],
 });
 
