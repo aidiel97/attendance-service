@@ -26,4 +26,4 @@ const connectToRedis = (): Promise<void> => {
     });
 };
 
-export { connectToRedis, connectToMysql}
+export { connectToRedis, connectToMysql }

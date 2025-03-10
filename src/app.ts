@@ -5,7 +5,7 @@ import userRouter from "./domain/user/route"
 import attendanceRouter from "./domain/attendance/route"
 
 import { Config } from "./pkg/config/config";
-import { connectToMysql, connectToRedis } from "./pkg/db/connection";
+import {connectToMysql, connectToRedis} from "./pkg/db/connection";
 import {Jwt} from "./pkg/authentication/jwt";
 
 const app = express();

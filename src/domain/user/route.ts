@@ -4,7 +4,7 @@ import {Jwt} from "../../pkg/authentication/jwt";
 
 const router = Router();
 
-router.get("/", UserHandler.getList);
+router.get("/", Jwt.verifyToken, UserHandler.getList);
 router.get("/profile", Jwt.verifyToken, UserHandler.getProfile);
 
 router.post("/register", UserHandler.register);

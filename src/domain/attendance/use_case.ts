@@ -1,14 +1,16 @@
 import {DateTime} from "../../pkg/datetime/datetime";
 import {AttendanceCommand} from "./repository/command";
 import {AttendanceQuery} from "./repository/query";
+import {Attendance} from "../../entities/attendance";
 import getRedisClient from "../../pkg/db/redis";
+import { getElasticsearchClient } from "../../pkg/db/elastic"
 
 const attendanceCommand = new AttendanceCommand();
 const attendanceQuery = new AttendanceQuery();
 
 export class AttendanceUseCase {
     static async checkLastStatus(user_id: string) {
-        const attendance = await attendanceQuery.findUserAttendanceToday(user_id);
+        const attendance = await attendanceQuery.mysqlFindUserAttendanceToday(user_id);
         if (!attendance) {
             throw new Error("Outside Working Hour");
         }
@@ -34,7 +36,7 @@ export class AttendanceUseCase {
             throw new Error("Already Clocked In");
         }
 
-        const clockInCheck = await attendanceQuery.findUserAttendanceToday(user_id)
+        const clockInCheck = await attendanceQuery.mysqlFindUserAttendanceToday(user_id)
         if (clockInCheck) {
             throw new Error("Already Clock In");
         }
@@ -58,16 +60,16 @@ export class AttendanceUseCase {
         }
     }
 
-
     static async clockOut(user_id: string) {
         const status = 'OUT'
         const now = DateTime.nowUTC7();
         const redisClient = getRedisClient();
+        const elasticsearchClient = getElasticsearchClient();
 
         let attendance;
         attendance = await attendanceQuery.getRedisAttendanceStatus(redisClient, user_id);
         if (!attendance) {
-            attendance = await attendanceQuery.findUserAttendanceToday(user_id)
+            attendance = await attendanceQuery.mysqlFindUserAttendanceToday(user_id)
             if (!attendance) {
                 throw new Error("Need to Clocked In First");
             }
@@ -85,6 +87,19 @@ export class AttendanceUseCase {
             });
             if (attendanceData) {
                 await attendanceCommand.redisAttendanceStatus(redisClient, attendanceData, now);
+
+                await elasticsearchClient.index({
+                    index: 'attendance',
+                    id: attendanceData.id.toString(),
+                    body: {
+                        user_id: user_id,
+                        status: status,
+                        clock_out: now,
+                        updated_at: now,
+                        created_at: attendanceData.created_at
+                    }
+                });
+
                 return attendanceData;
             } else {
                 console.log("Attendance record not found.");
@@ -94,5 +109,9 @@ export class AttendanceUseCase {
             console.error("Failed to clock out:", error);
             throw error
         }
+    }
+
+    static async report() {
+        return await attendanceQuery.mysqlFind();
     }
 }

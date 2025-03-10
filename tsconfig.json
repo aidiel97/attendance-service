@@ -5,6 +5,11 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "strict": true,
-        "esModuleInterop": true
-    }
+        "esModuleInterop": true,
+        "outDir": "./dist",
+        "rootDir": "./src"
+    },
+    "include": [
+        "src/**/*.ts"
+    ]
 }

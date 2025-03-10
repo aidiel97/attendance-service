@@ -13,11 +13,11 @@ export class AttendanceQuery {
         return data ? JSON.parse(data) : null;
     }
 
-    async findOneById(id: string) {
+    async mysqlFindOneById(id: string) {
         return attendanceRepository.findOneBy({ id });
     };
 
-    async find(filters?: Partial<Attendance>) {
+    async mysqlFind(filters?: Partial<Attendance>) {
         return attendanceRepository.find({
             where: {
                 ...filters,
@@ -26,7 +26,7 @@ export class AttendanceQuery {
         });
     };
 
-    async findUserAttendanceToday(user_id: string) {
+    async mysqlFindUserAttendanceToday(user_id: string) {
         const {start, end} = DateTime.startEndOfDay(DateTime.nowUTC7())
         return attendanceRepository.findOneBy({
             user_id,

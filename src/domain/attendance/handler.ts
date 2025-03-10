@@ -33,5 +33,15 @@ export class AttendanceHandler {
             return ApiResponse.fail(res, null, errorMessage, 500);
         }
     }
+
+    static async Report(req: Request, res: Response) {
+        try {
+            const result = await AttendanceUseCase.report();
+            return ApiResponse.success(res, result, "Profile Data Provided");
+        } catch (error: any) {
+            const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+            return ApiResponse.fail(res, null, errorMessage, 500);
+        }
+    }
 }
 

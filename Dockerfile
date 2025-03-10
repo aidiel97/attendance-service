@@ -14,6 +14,7 @@ RUN npm install
 COPY . .
 
 # Menjalankan aplikasi
+RUN npm run build
 CMD ["npm", "start"]
 
 # Membuka port yang digunakan aplikasi
