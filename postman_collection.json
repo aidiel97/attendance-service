@@ -1,0 +1,299 @@
+{
+	"info": {
+		"_postman_id": "cf56e218-eeb9-465b-aff0-2c78c09d0500",
+		"name": "Kasir Pintar Code Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9402870"
+	},
+	"item": [
+		{
+			"name": "List Active User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/user/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Profile",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/v1/user/profile",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"user",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register User",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"abang3\",\r\n    \"email\": \"abang3@email.com\",\r\n    \"password\": \"coba\",\r\n    \"full_name\": \"coba abang\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/user/register",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"var token = response.data;\r",
+							"\r",
+							"if (response.status && token) {\r",
+							"    pm.environment.set('bearer_token', token);\r",
+							"} else {\r",
+							"    console.log(\"Token or status is missing\");\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 404\", () => {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"should have value message 'user not found'\", () => {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"user not found\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 1000ms\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"abang3\",\r\n    \"password\": \"coba\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/user/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Attendance Status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearer_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/v1/attendance/status",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"attendance",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Report",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{bearer_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/v1/attendance/report",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"attendance",
+						"report"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clock In",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/attendance/in",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"attendance",
+						"in"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clock Out",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/v1/attendance/out",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"v1",
+						"attendance",
+						"out"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
