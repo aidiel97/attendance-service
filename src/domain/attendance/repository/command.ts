@@ -1,15 +1,19 @@
 import AppDataSource from "../../../pkg/db/mysql";
 import { Attendance } from "../../../entities/attendance";
 import getRedisClient from "../../../pkg/db/redis";
+import Redis from "ioredis";
+import {AttendanceHandler} from "../handler";
 
-const redisClient = getRedisClient();
 const attendanceRepository = AppDataSource.getRepository(Attendance);
+const redisKey = 'attendance';
 
 export class AttendanceCommand {
-    async redisAttendanceStatus(user_id: string, status: string) {
-        const key = `clockin:${user_id}`;
+    async redisAttendanceStatus(redisClient: Redis, attendance: Attendance, timestamp: number) {
+        const key = `${redisKey}:${attendance.user_id}`;
         const ttl = 86400;
-        await redisClient.set(key, status, "EX", ttl);
+        const data = JSON.stringify(attendance);
+
+        await redisClient.set(key, data, "EX", ttl);
     }
 
     async mysqlCreate(attendanceData: Partial<Attendance>) {
@@ -18,8 +22,13 @@ export class AttendanceCommand {
     }
 
     async mysqlEdit(id: string, attendanceData: Partial<Attendance>) {
-        await attendanceRepository.update(id, attendanceData);
-        return attendanceRepository.findOneBy({ id });
+        try {
+            await attendanceRepository.update(id, attendanceData);
+            return await attendanceRepository.findOneBy({ id });
+        } catch (error) {
+            console.error("Error in mysqlEdit:", error);
+            throw error;
+        }
     }
 
     async mysqlRemove(id: string) {

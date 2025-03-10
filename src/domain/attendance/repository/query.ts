@@ -2,14 +2,15 @@ import { Between } from "typeorm";
 import AppDataSource from "../../../pkg/db/mysql";
 import { Attendance } from "../../../entities/attendance";
 import {DateTime} from "../../../pkg/datetime/datetime";
-import getRedisClient from "../../../pkg/db/redis";
+import Redis from "ioredis";
 
-const redisClient = getRedisClient();
 const attendanceRepository = AppDataSource.getRepository(Attendance);
+const redisKey = 'attendance';
 
 export class AttendanceQuery {
-    async getRedisAttendanceStatus(user_id: string) {
-        return await redisClient.get(`clockin:${user_id}`);
+    async getRedisAttendanceStatus(redisClient: Redis, user_id: string): Promise<Attendance | null> {
+        const data = await redisClient.get(`${redisKey}:${user_id}`);
+        return data ? JSON.parse(data) : null;
     }
 
     async findOneById(id: string) {

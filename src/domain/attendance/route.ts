@@ -3,9 +3,9 @@ import { AttendanceHandler } from './handler';
 
 const router = Router();
 
-router.get("/", AttendanceHandler.CheckLastStatus);
+router.get("/status", AttendanceHandler.CheckLastStatus);
 
 router.post("/in", AttendanceHandler.ClockIn);
-// router.post("/out", AttendanceHandler.ClockOut);
+router.put("/out", AttendanceHandler.ClockOut);
 
 export default router;

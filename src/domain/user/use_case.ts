@@ -4,6 +4,7 @@ import {DateTime} from "../../pkg/datetime/datetime";
 import {UserCommand} from "./repository/command";
 import {UserQuery} from "./repository/query";
 import {Jwt} from "../../pkg/authentication/jwt";
+import getRedisClient from "../../pkg/db/redis";
 
 const userCommand = new UserCommand();
 const userQuery = new UserQuery();
@@ -24,7 +25,8 @@ export class UserUseCase {
     }
 
     static async login(loginDto: LoginDto) {
-        const now = DateTime.nowUTC7();
+        const redisClient = getRedisClient();
+
         const user = await userQuery.mysqlFindOneByUsername(loginDto.username)
         if (!user) {
             throw new Error("User not found");
@@ -33,6 +35,7 @@ export class UserUseCase {
             throw new Error("Invalid password");
         }
 
+        await userCommand.redisProfile(redisClient, user);
         return Jwt.generateToken({
             id: user.id,
             username: user.username
@@ -52,5 +55,10 @@ export class UserUseCase {
         }
 
         return response;
+    }
+
+    static async getProfile(user_id: string) {
+        const redisClient = getRedisClient();
+        return userQuery.getProfileRedis(redisClient, user_id);
     }
 }

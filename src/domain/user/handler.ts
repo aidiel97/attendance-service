@@ -46,5 +46,15 @@ export class UserHandler {
             return ApiResponse.fail(res, null, errorMessage, 500);
         }
     }
+
+    static async getProfile(req: Request, res: Response) {
+        try {
+            const result = await UserUseCase.getProfile(req.body.usermetadata.id);
+            return ApiResponse.success(res, result, "Profile Data Provided");
+        } catch (error: any) {
+            const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
+            return ApiResponse.fail(res, null, errorMessage, 500);
+        }
+    }
 }
 
